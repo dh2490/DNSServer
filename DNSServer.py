@@ -30,12 +30,12 @@ def generate_aes_key(password, salt):
     key = base64.urlsafe_b64encode(key)
     return key
 
-# Lookup details on fernet in the cryptography.io documentation    
+# Lookup details on fernet in the cryptography.io documentation
 def encrypt_with_aes(input_string, password, salt):
     key = generate_aes_key(password, salt)
     f = Fernet(key)
     encrypted_data = f.encrypt(input_string.encode('utf-8')) #call the Fernet encrypt method
-    return encrypted_data    
+    return encrypted_data
 
 def decrypt_with_aes(encrypted_data, password, salt):
     key = generate_aes_key(password,salt)
@@ -49,7 +49,7 @@ input_string = 'AlwaysWatching'
 encrypted_value = encrypt_with_aes(input_string, password, salt) # exfil function
 decrypted_value = decrypt_with_aes(encrypted_value, password, salt)  # exfil function
 
-# For future use    
+# For future use
 def generate_sha256_hash(input_string):
     sha256_hash = hashlib.sha256()
     sha256_hash.update(input_string.encode('utf-8'))
@@ -93,6 +93,15 @@ dns_records = {
         dns.rdatatype.CNAME: 'www.nyu.edu.',
         dns.rdatatype.NS: 'ns1.nyu.edu.',
         dns.rdatatype.TXT: (base64.b64encode(input_string).decode('utf-8'),),
+        dns.rdatatype.SOA: (
+            'ns1.nyu.edu.', #mname
+            'admin.nyu.edu.', #rname
+            2023081401, #serial
+            3600, #refresh
+            1800, #retry
+            604800, #expire
+            86400, #minimum
+        ),
     },
 }
 
